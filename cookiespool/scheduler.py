@@ -5,6 +5,7 @@ from cookiespool.api import app
 from cookiespool.config import *
 from cookiespool.generator import *
 from cookiespool.tester import *
+import threading
 
 
 class Scheduler(object):
@@ -21,7 +22,7 @@ class Scheduler(object):
                     time.sleep(cycle)
             except Exception as e:
                 print(e.args)
-    
+
     @staticmethod
     def generate_cookie(cycle=CYCLE):
         while True:
@@ -35,21 +36,33 @@ class Scheduler(object):
                     time.sleep(cycle)
             except Exception as e:
                 print(e.args)
-    
+
     @staticmethod
     def api():
         print('API接口开始运行')
         app.run(host=API_HOST, port=API_PORT)
-    
+
     def run(self):
+        # if API_PROCESS:
+        #     api_process = threading.Thread(target=Scheduler.api)
+        #     api_process.start()
+        #
+        # if GENERATOR_PROCESS:
+        #     generate_process = threading.Thread(target=Scheduler.generate_cookie)
+        #     generate_process.start()
+        #
+        # if VALID_PROCESS:
+        #     valid_process = threading.Thread(target=Scheduler.valid_cookie)
+        #     valid_process.start()
+
         if API_PROCESS:
             api_process = Process(target=Scheduler.api)
             api_process.start()
-        
+
         if GENERATOR_PROCESS:
             generate_process = Process(target=Scheduler.generate_cookie)
             generate_process.start()
-        
+
         if VALID_PROCESS:
             valid_process = Process(target=Scheduler.valid_cookie)
             valid_process.start()
